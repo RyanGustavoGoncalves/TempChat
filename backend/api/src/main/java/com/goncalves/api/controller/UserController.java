@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestPart(value = "userData") @Valid DataUser data,
-                                      @RequestPart(value = "file") MultipartFile file,
+                                      @RequestPart(value = "file", required = false) MultipartFile file,
                                       UriComponentsBuilder uriComponentsBuilder) {
         try {
             User newUser = userService.register(data, file);
