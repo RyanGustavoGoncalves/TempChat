@@ -7,6 +7,7 @@ import com.goncalves.api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/auth/register")
+    @PostMapping(value = "/auth/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> register(@RequestPart(value = "userData") @Valid DataUser data,
                                       @RequestPart(value = "file", required = false) MultipartFile file,
                                       UriComponentsBuilder uriComponentsBuilder) {
