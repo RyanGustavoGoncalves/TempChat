@@ -1,6 +1,7 @@
 package com.goncalves.api.controller;
 
 import com.goncalves.api.DTO.DataUser;
+import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
 import com.goncalves.api.service.UserService;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Map;
 
 @Slf4j
 @Tag(name = "/user")
@@ -36,8 +39,8 @@ public class UserController {
      * Endpoint para registrar um novo usuário com criptografia de senha.
      * Este endpoint aceita dados do usuário e um arquivo opcional (por exemplo, uma foto de perfil).
      *
-     * @param data Os dados do usuário encapsulados em um objeto DataUser.
-     * @param file Um arquivo opcional (MultipartFile) que pode ser enviado com os dados do usuário.
+     * @param data                 Os dados do usuário encapsulados em um objeto DataUser.
+     * @param file                 Um arquivo opcional (MultipartFile) que pode ser enviado com os dados do usuário.
      * @param uriComponentsBuilder Um UriComponentsBuilder para construir a URI do novo recurso criado.
      * @return ResponseEntity contendo o novo usuário criado ou uma mensagem de erro.
      */
@@ -62,13 +65,39 @@ public class UserController {
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User data conflict: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody String username, @RequestBody String password) {
-        return ResponseEntity.ok().body("Login successful! " + username + " " + password);
+    @PostMapping(value = "/auth/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Authenticate a user and return a JWT token", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authentication successful. Returns a JWT token."),
+            @ApiResponse(responseCode = "400", description = "Credential and password must be provided."),
+            @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
+    })
+    public ResponseEntity<?> login(@RequestBody @Valid Map<String, String> userLoginData) {
+        try {
+            // Obtém o nome de usuário ou email do mapa de dados de login
+            String crendential = userLoginData.get("username");
+
+            // Obtém a senha do mapa de dados de login
+            String password = userLoginData.get("password");
+
+            // Verifica se a credencial ou senha são nulos e retorna uma resposta 400 (Bad Request) se necessário
+            if (crendential == null || password == null)
+                return ResponseEntity.badRequest()
+                        .body("credential and password must be provided.");
+
+            // Autentica o usuário usando o serviço de login e retorna um token JWT na resposta 200 (OK)
+            return ResponseEntity.ok().body(new TokenDTO(userService.login(crendential, password)));
+        } catch (Exception e) {
+            // Captura qualquer exceção inesperada e retorna uma resposta 500 (Internal Server Error) com a mensagem de erro
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
+        }
     }
+
 
 }
