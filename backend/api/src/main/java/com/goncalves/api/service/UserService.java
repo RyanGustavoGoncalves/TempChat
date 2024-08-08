@@ -1,6 +1,7 @@
 package com.goncalves.api.service;
 
 import com.goncalves.api.DTO.DataUser;
+import com.goncalves.api.DTO.GenericError;
 import com.goncalves.api.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,38 +19,37 @@ public class UserService {
     public User register(DataUser user, MultipartFile file) {
         try {
             // Validação de senha
-            if (user.password() == null || user.password().length() < 8) {
-                throw new IllegalArgumentException("Password must have at least 8 characters");
+            GenericError error = validUser(user);
+            if (error.code() != 200) {
+                throw new IllegalArgumentException(error.message());
             }
 
-            // Verificar se o arquivo está vazio ou nulo
-            if (file == null || file.isEmpty()) {
-                throw new IllegalArgumentException("File must not be empty");
-            }
+            // Verificar se o arquivo não está vazio ou nulo
+            String filePath = null;
+            if (file != null && !file.isEmpty()) {
 
-            // Criar a pasta se não existir
-            File directory = new File(IMAGE_FOLDER);
-            if (!directory.exists()) {
-                if (!directory.mkdirs()) {
-                    throw new RuntimeException("Failed to create directory");
+                // Criar a pasta se não existir
+                File directory = new File(IMAGE_FOLDER);
+                if (!directory.exists()) {
+                    if (!directory.mkdirs()) {
+                        throw new RuntimeException("Failed to create directory");
+                    }
                 }
+
+                // Obter o nome original do arquivo
+                String originalFilename = file.getOriginalFilename();
+                if (originalFilename == null || originalFilename.isEmpty()) {
+                    throw new IllegalArgumentException("File name must not be empty");
+                }
+
+                // Definir o caminho completo para salvar o arquivo
+                filePath = IMAGE_FOLDER + System.currentTimeMillis() + "_" + originalFilename;
+                File destinationFile = new File(filePath);
+
+                // Salvar o arquivo
+                file.transferTo(destinationFile.getAbsoluteFile());
+
             }
-
-            // Obter o nome original do arquivo
-            String originalFilename = file.getOriginalFilename();
-            if (originalFilename == null || originalFilename.isEmpty()) {
-                throw new IllegalArgumentException("File name must not be empty");
-            }
-
-            // Definir o caminho completo para salvar o arquivo
-            String filePath = IMAGE_FOLDER + System.currentTimeMillis() + "_" + originalFilename;
-            File destinationFile = new File(filePath);
-
-            // Debug: Verificar o caminho do arquivo
-            System.out.println("Saving file to: " + destinationFile.getAbsolutePath());
-
-            // Salvar o arquivo
-            file.transferTo(destinationFile.getAbsoluteFile());
 
             // Codificar a senha
             String encryptedPassword = new BCryptPasswordEncoder().encode(user.password());
@@ -74,5 +74,18 @@ public class UserService {
             // Tratar outras exceções
             throw new RuntimeException("An unexpected error occurred during user registration", e);
         }
+    }
+
+    public static GenericError validUser(DataUser user) {
+        if (user.password() == null || user.password().length() < 8) {
+            return new GenericError(400, "Password must have at least 8 characters");
+        }
+        if (user.username() == null || user.username().length() < 3) {
+            return new GenericError(400, "Username must have at least 3 characters");
+        }
+        if (!user.email().contains("@")) {
+            return new GenericError(400, "Email must have at least 5 characters");
+        }
+        return new GenericError(200, "User is valid");
     }
 }
