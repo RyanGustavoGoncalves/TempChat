@@ -1,6 +1,7 @@
 package com.goncalves.api.controller;
 
 import com.goncalves.api.DTO.DataUser;
+import com.goncalves.api.DTO.DataUserLogin;
 import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
 
 @Slf4j
 @Tag(name = "/user")
@@ -70,6 +70,35 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint para autenticar um usuário e retornar um token JWT.
+     *
+     * @param userLoginData Dados de login do usuário, recebidos no corpo da requisição como JSON.
+     *
+     * @return ResponseEntity<?> Um ResponseEntity contendo o token JWT em caso de sucesso,
+     *         ou uma mensagem de erro em caso de falha.
+     *
+     * O método realiza as seguintes operações:
+     *
+     * 1. Validação de Dados:
+     *    - Verifica se a credencial ou senha são nulos.
+     *    - Se algum desses campos estiver nulo, retorna uma resposta 400 (Bad Request) com a mensagem:
+     *      "credential and password must be provided."
+     *
+     * 2. Autenticação do Usuário:
+     *    - Chama o serviço de login para autenticar o usuário com a credencial e senha fornecidas.
+     *    - Se a autenticação for bem-sucedida, retorna uma resposta 200 (OK) contendo o token JWT.
+     *
+     * 3. Tratamento de Erros:
+     *    - Se ocorrer qualquer exceção inesperada durante a execução do método, retorna uma resposta 500
+     *      (Internal Server Error) com a mensagem de erro.
+     *
+     * @throws IllegalArgumentException Se os dados de login não forem válidos.
+     *
+     * @see DataUserLogin Classe que encapsula os dados de login do usuário.
+     * @see TokenDTO Classe que encapsula o token JWT a ser retornado.
+     * @see UserService Serviço responsável pela autenticação do usuário.
+     */
     @PostMapping(value = "/auth/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Authenticate a user and return a JWT token", method = "POST")
     @ApiResponses(value = {
@@ -77,21 +106,17 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Credential and password must be provided."),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
     })
-    public ResponseEntity<?> login(@RequestBody @Valid Map<String, String> userLoginData) {
+    public ResponseEntity<?> login(@RequestBody @Valid DataUserLogin userLoginData) {
         try {
-            // Obtém o nome de usuário ou email do mapa de dados de login
-            String crendential = userLoginData.get("username");
-
-            // Obtém a senha do mapa de dados de login
-            String password = userLoginData.get("password");
 
             // Verifica se a credencial ou senha são nulos e retorna uma resposta 400 (Bad Request) se necessário
-            if (crendential == null || password == null)
+            if (userLoginData.credential() == null || userLoginData.password() == null)
                 return ResponseEntity.badRequest()
                         .body("credential and password must be provided.");
 
             // Autentica o usuário usando o serviço de login e retorna um token JWT na resposta 200 (OK)
-            return ResponseEntity.ok().body(new TokenDTO(userService.login(crendential, password)));
+            return ResponseEntity.ok()
+                    .body(new TokenDTO(userService.login(userLoginData.credential(), userLoginData.password())));
         } catch (Exception e) {
             // Captura qualquer exceção inesperada e retorna uma resposta 500 (Internal Server Error) com a mensagem de erro
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

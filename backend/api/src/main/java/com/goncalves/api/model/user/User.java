@@ -2,6 +2,7 @@ package com.goncalves.api.model.user;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +23,17 @@ public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 120)
+    @NotBlank(message = "Username is required")
     private String username;
+    @Column(nullable = false)
+    @NotBlank(message = "Password is required")
     private String password;
+    @Column(nullable = false, unique = true, length = 250)
+    @NotBlank(message = "Email is required")
     private String email;
     private String picture;
+    @Column(nullable = false)
     private Date dateCreation;
 
     public User(String username, String password, String email, String picture, Date dateCreation) {
