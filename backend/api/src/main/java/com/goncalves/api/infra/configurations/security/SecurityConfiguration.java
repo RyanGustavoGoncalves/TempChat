@@ -55,7 +55,17 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
-                                webConfig.getPrefix() + "/user/auth/**"
+                                webConfig.getPrefix() + "/user/auth/**",
+                                webConfig.getPrefix() + "/swagger-ui/**",
+                                webConfig.getPrefix() + "/swagger-ui.html",
+                                webConfig.getPrefix() + "/v3/api-docs/**",
+                                webConfig.getPrefix() + "/swagger-resources/**",
+                                webConfig.getPrefix() + "/webjars/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())

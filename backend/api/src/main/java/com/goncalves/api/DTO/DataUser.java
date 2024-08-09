@@ -5,7 +5,6 @@ import java.util.Date;
 public record DataUser(
         String username,
         String email,
-        String password,
-        Date dateCreation
+        String password
 ) {
 }
