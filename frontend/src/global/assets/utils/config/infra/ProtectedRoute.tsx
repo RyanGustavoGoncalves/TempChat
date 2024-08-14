@@ -1,4 +1,3 @@
-import { url } from '@/infra/url';
 import { useState, useEffect, ComponentType } from 'react';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -16,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Element, ...re
     const checkToken = async () => {
       if (token) {
         try {
-          const response = await fetch(`${url}/token`, {
+          const response = await fetch(`${process.env.SPRING_APP_URL}/token`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
