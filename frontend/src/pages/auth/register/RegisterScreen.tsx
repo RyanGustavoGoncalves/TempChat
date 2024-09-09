@@ -14,6 +14,8 @@ const RegisterScreen = () => {
         password: '',
         file: null
     });
+    
+    const springAppUrl = import.meta.env.VITE_API_URL;
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +47,7 @@ const RegisterScreen = () => {
         );
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/user/auth/register', {
+            const response = await fetch(`${springAppUrl}/api/v1/user/auth/register`, {
                 method: 'POST',
                 body: formDataToSend,
             });

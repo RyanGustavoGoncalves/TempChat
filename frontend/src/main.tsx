@@ -6,6 +6,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/home/Home.tsx'
 import ErrorNotFoundPage from './pages/error/notFoundPage/ErrorNotFoundPage.tsx'
 import ProtectedRoute from './global/assets/utils/config/infra/ProtectedRoute.tsx'
+import path from 'path'
+import RegisterScreen from './pages/auth/register/RegisterScreen.tsx'
+import LoginScreen from './pages/auth/login/LoginScreen.tsx'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +22,14 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/auth/register",
+    element: <RegisterScreen />,
+  },
+  {
+    path: "/auth/login",
+    element: <LoginScreen />,
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
