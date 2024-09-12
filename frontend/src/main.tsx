@@ -10,6 +10,7 @@ import RegisterScreen from './pages/auth/register/RegisterScreen.tsx'
 import LoginScreen from './pages/auth/login/LoginScreen.tsx'
 import { ThemeProvider } from './components/ThemeProviderContext.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import Navbar from './global/assets/components/navbar/Navbar.tsx'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Navbar />
       <RouterProvider router={router} />
       <Toaster closeButton={true} richColors visibleToasts={5} expand={true} />
     </ThemeProvider>
