@@ -2,6 +2,7 @@ package com.goncalves.api.controller;
 
 import com.goncalves.api.DTO.DataUser;
 import com.goncalves.api.DTO.DataUserLogin;
+import com.goncalves.api.DTO.GenericReturnError;
 import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
@@ -112,7 +113,7 @@ public class UserController {
             // Verifica se a credencial ou senha são nulos e retorna uma resposta 400 (Bad Request) se necessário
             if (userLoginData.credential() == null || userLoginData.password() == null)
                 return ResponseEntity.badRequest()
-                        .body("credential and password must be provided.");
+                        .body(new GenericReturnError("Register","credential and password must be provided."));
 
             // Autentica o usuário usando o serviço de login e retorna um token JWT na resposta 200 (OK)
             return ResponseEntity.ok()

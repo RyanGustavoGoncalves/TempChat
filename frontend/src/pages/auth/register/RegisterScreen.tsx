@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Github } from "lucide-react";
 import ButtonLoading from "@/global/assets/components/buttonLoading/ButtonLoading";
+import { ModeToggle } from "@/components/ModeToggle";
 
 interface FormData {
     username: string;
@@ -40,6 +41,7 @@ const RegisterScreen = () => {
 
     return (
         <main className="h-screen grid place-items-center">
+            <ModeToggle />
             <Card className="mx-auto max-w-sm">
                 <CardHeader>
                     <CardTitle className="text-xl">Sign Up</CardTitle>

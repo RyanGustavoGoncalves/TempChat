@@ -1,3 +1,6 @@
+import React from "react";
+import { toast } from "sonner";
+
 export const registerUser = async (e: React.FormEvent<HTMLFormElement>, formData: any, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
     e.preventDefault();
     setLoading(true);
@@ -23,6 +26,7 @@ export const registerUser = async (e: React.FormEvent<HTMLFormElement>, formData
         });
 
         if (response.status === 201) {
+            toast.success("User registered successfully!");
             console.log('User registered successfully!');
 
         } else if (response.status === 400) {
@@ -34,11 +38,16 @@ export const registerUser = async (e: React.FormEvent<HTMLFormElement>, formData
                 errorArray.push({ fieldName, errorMessage });
             }
 
-            console.log(errorArray);
         } else {
+            toast.error("Error", {
+                description: "Please try again later!"
+            });
             console.log('Error: ' + response.status);
         }
     } catch (error) {
+        toast.error("Error", {
+            description: "Internal error, please try again later!"
+        });
         console.error('Error:', error);
     } finally {
         setLoading(false);

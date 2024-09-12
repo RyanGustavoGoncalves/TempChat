@@ -8,6 +8,8 @@ import ErrorNotFoundPage from './pages/error/notFoundPage/ErrorNotFoundPage.tsx'
 import ProtectedRoute from './global/assets/utils/config/infra/ProtectedRoute.tsx'
 import RegisterScreen from './pages/auth/register/RegisterScreen.tsx'
 import LoginScreen from './pages/auth/login/LoginScreen.tsx'
+import { ThemeProvider } from './components/ThemeProviderContext.tsx'
+import { Toaster } from './components/ui/sonner.tsx'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <RouterProvider router={router} />
+      <Toaster closeButton={true} richColors visibleToasts={5} expand={true} />
+    </ThemeProvider>
   </React.StrictMode>,
 )
