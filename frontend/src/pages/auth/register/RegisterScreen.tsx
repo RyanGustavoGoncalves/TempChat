@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Github } from "lucide-react";
+import ButtonLoading from "@/global/assets/components/buttonLoading/ButtonLoading";
 
 interface FormData {
     username: string;
@@ -89,9 +90,10 @@ const RegisterScreen = () => {
                                     name="file"
                                     onChange={handleChange} />
                             </div>
-                            <Button type="submit" className="w-full">
+                            <ButtonLoading type="submit" loading={loading} className="w-full">
                                 Create an account
-                            </Button>
+                            </ButtonLoading>
+
                             <Button variant="outline" className="w-full">
                                 <Github size={24} />
                             </Button>
