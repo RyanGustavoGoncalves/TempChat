@@ -6,7 +6,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/home/Home.tsx'
 import ErrorNotFoundPage from './pages/error/notFoundPage/ErrorNotFoundPage.tsx'
 import ProtectedRoute from './global/assets/utils/config/infra/ProtectedRoute.tsx'
-import path from 'path'
 import RegisterScreen from './pages/auth/register/RegisterScreen.tsx'
 import LoginScreen from './pages/auth/login/LoginScreen.tsx'
 

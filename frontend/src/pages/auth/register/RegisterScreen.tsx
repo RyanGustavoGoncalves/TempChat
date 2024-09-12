@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { registerUser } from "./assets/utils/handleSubmit/handleSubmit";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface FormData {
     username: string;
     email: string;
     password: string;
-    file: File | null; // Adicionando o tipo File
+    file: File | null;
 }
 
 const RegisterScreen = () => {
@@ -14,115 +20,84 @@ const RegisterScreen = () => {
         password: '',
         file: null
     });
-    
-    const springAppUrl = import.meta.env.VITE_API_URL;
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, files } = e.target;
 
         if (type === 'file' && files) {
-            setFormData({ ...formData, [name]: files[0] }); // Atualiza o estado com o arquivo selecionado
+            setFormData({ ...formData, [name]: files[0] });
         } else {
             setFormData({ ...formData, [name]: value });
         }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const formDataToSend = new FormData();
-        if (formData.file) {
-            formDataToSend.append('file', formData.file);
-        }
-
-        formDataToSend.append(
-            'userData',
-            new Blob([JSON.stringify({
-                username: formData.username,
-                email: formData.email,
-                password: formData.password
-            })], { type: 'application/json' })
-        );
-
-        try {
-            const response = await fetch(`${springAppUrl}/api/v1/user/auth/register`, {
-                method: 'POST',
-                body: formDataToSend,
-            });
-
-            if (response.status === 201) {
-                console.log('User registered successfully!');
-
-            } else if (response.status === 400) {
-                const errorData = await response.json();
-                const errorArray = [];
-
-                for (const fieldName in errorData) {
-                    const errorMessage = errorData[fieldName];
-                    errorArray.push({ fieldName, errorMessage });
-                }
-
-                console.log(errorArray);
-            } else {
-                console.log('Error: ' + response.status);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            setLoading(false);
-        }
+        registerUser(e, formData, setLoading);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="file">Upload File:</label>
-                <input
-                    type="file"
-                    id="file"
-                    name="file"
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit" disabled={loading}>
-                {loading ? 'Registering...' : 'Register'}
-            </button>
-        </form>
+        <>
+            <Card className="mx-auto max-w-sm">
+                <CardHeader>
+                    <CardTitle className="text-xl">Sign Up</CardTitle>
+                    <CardDescription>
+                        Enter your information to create an account
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit}>
+
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="username">Username</Label>
+                                <Input type="text"
+                                    id="username"
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    placeholder="username"
+                                    required />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="m@example.com"
+                                    required
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Input type="password"
+                                    id="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="password"
+                                    required />
+                            </div>
+                            <Button type="submit" className="w-full">
+                                Create an account
+                            </Button>
+                            <Button variant="outline" className="w-full">
+                                Sign up with GitHub
+                            </Button>
+                        </div>
+                        <div className="mt-4 text-center text-sm">
+                            Already have an account?{" "}
+                            <Link to={"/auth/login"} className="underline">
+                                Sign in
+                            </Link>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </>
     )
 }
 
