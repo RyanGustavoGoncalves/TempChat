@@ -81,6 +81,13 @@ const RegisterScreen = () => {
                                     placeholder="password"
                                     required />
                             </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="file">Upload File:</Label>
+                                <Input type="file"
+                                    id="file"
+                                    name="file"
+                                    onChange={handleChange} />
+                            </div>
                             <Button type="submit" className="w-full">
                                 Create an account
                             </Button>
