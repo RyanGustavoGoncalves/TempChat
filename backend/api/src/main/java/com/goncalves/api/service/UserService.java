@@ -17,7 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.login.AccountLockedException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -44,6 +47,11 @@ public class UserService {
             GenericError state = UserChecker(user.username(), user.email());
             if (state.code() != 200) {
                 throw new IllegalArgumentException(state.message());
+            }
+
+            GenericError passwordSate = CheckingSpecialCharacters(user.password());
+            if (passwordSate.code() != 200) {
+                throw new IllegalArgumentException(passwordSate.message());
             }
 
             // Verificar se o arquivo não está vazio ou nulo
@@ -99,9 +107,7 @@ public class UserService {
     }
 
     public static GenericError validUser(DataUser user) {
-        if (user.password() == null || user.password().length() < 8) {
-            return new GenericError(400, "Password must have at least 8 characters");
-        }
+
         if (user.username() == null || user.username().length() < 3) {
             return new GenericError(400, "Username must have at least 3 characters");
         }
@@ -111,17 +117,62 @@ public class UserService {
         return new GenericError(200, "User is valid");
     }
 
-    public GenericError UserChecker(String username, String email){
+    public GenericError UserChecker(String username, String email) {
         UserDetails user = userRepository.findByUsername(username);
-        if(user != null){
+        if (user != null) {
             return new GenericError(409, "Username already exists");
         }
         User user2 = userRepository.findByEmail(email);
-        if(user2 != null){
+        if (user2 != null) {
             return new GenericError(409, "Email already exists");
         }
         return new GenericError(200, "User is valid");
     }
+
+    public static GenericError CheckingSpecialCharacters(String password) {
+        List<String> errors = new ArrayList<>();
+        String templateMessage = "The password must contain at least";
+
+        // Verifica o comprimento mínimo
+        if (password.length() < 8) {
+            errors.add("8 characters.");
+        }
+
+        // Verifica se contém letra maiúscula
+        if (!password.matches(".*[A-Z].*")) {
+            errors.add("a capital letter.");
+        }
+
+        // Verifica se contém letra minúscula
+        if (!password.matches(".*[a-z].*")) {
+            errors.add("a lowercase letter.");
+        }
+
+        // Verifica se contém número
+        if (!password.matches(".*[0-9].*")) {
+            errors.add("a number.");
+        }
+
+        // Verifica se contém caractere especial
+        if (!password.matches(".*[!@#$%^&+=].*")) {
+            errors.add("a special character (!@#$%^&+=).");
+        }
+
+        // Verifica se contém espaços em branco
+        if (password.matches(".*\\s.*")) {
+            errors.add("The password should not contain blank spaces.");
+        }
+
+        // Retorna os erros específicos ou valida a senha
+        if (errors.isEmpty()) {
+            return new GenericError(200, "Senha válida.");
+        } else {
+            // Retorna somente os erros referentes aos critérios não atendidos
+            String errorMessage = String.join(" ", errors);
+            return new GenericError(400, templateMessage +  " " + errorMessage);
+        }
+    }
+
 
     /**
      * Autentica um usuário com base em suas credenciais (email ou nome de usuário) e senha,

@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Github } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { verifyType } from "@/global/assets/utils/verifyType/verifyType";
+import ButtonShowPassword from "../assets/components/ButtonShowPassword";
 
 const LoginScreen = () => {
     const [crendential, setCrendential] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordPreview, setPasswordPreview] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -27,7 +29,7 @@ const LoginScreen = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                
+
                 navigate("/dashboard");
             } else {
                 alert("Credenciais inválidas. Tente novamente.");
@@ -62,18 +64,21 @@ const LoginScreen = () => {
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center">
-                                <Label htmlFor="password">Senha</Label>
+                                <Label htmlFor="password">Password</Label>
                                 <Link to={"#"} className="ml-auto inline-block text-sm underline">
-                                    Esqueceu sua senha?
+                                    Forgot your password?
                                 </Link>
                             </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            <div className="flex justify-end">
+                                <Input
+                                    id="password"
+                                    type={passwordPreview ? 'text' : 'password'}
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <ButtonShowPassword passwordPreview={passwordPreview} setPasswordPreview={setPasswordPreview} className="absolute m-0" />
+                            </div>
                         </div>
                         <Button type="submit" className="w-full">
                             Login

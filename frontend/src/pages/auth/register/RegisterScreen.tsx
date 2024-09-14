@@ -5,8 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Github } from "lucide-react";
+import { Eye, EyeOff, Github } from "lucide-react";
 import ButtonLoading from "@/global/assets/components/buttonLoading/ButtonLoading";
+import ButtonShowPassword from "../assets/components/ButtonShowPassword";
 
 interface FormData {
     username: string;
@@ -22,6 +23,7 @@ const RegisterScreen = () => {
         password: '',
         file: null
     });
+    const [passwordPreview, setPasswordPreview] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,13 +77,17 @@ const RegisterScreen = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input type="password"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    placeholder="password"
-                                    required />
+                                <div className="flex justify-end">
+                                    <Input
+                                        type={passwordPreview ? 'text' : 'password'}
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="password"
+                                        required />
+                                    <ButtonShowPassword passwordPreview={passwordPreview} setPasswordPreview={setPasswordPreview} className="absolute m-0" />
+                                </div>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="file">Upload File:</Label>
