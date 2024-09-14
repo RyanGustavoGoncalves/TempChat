@@ -20,34 +20,28 @@ export const registerUser = async (e: React.FormEvent<HTMLFormElement>, formData
     );
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/auth/register`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/user/auth/register`, {
             method: 'POST',
             body: formDataToSend,
         });
 
+        const data = await response.json();
+
         if (response.status === 201) {
             toast.success("User registered successfully!");
-            console.log('User registered successfully!');
-
+            console.info('User registered successfully!');
+            window.location.href = '/auth/login';
         } else if (response.status === 400) {
-            const errorData = await response.json();
-            const errorArray = [];
 
-            for (const fieldName in errorData) {
-                const errorMessage = errorData[fieldName];
-                errorArray.push({ fieldName, errorMessage });
-            }
+            toast.error(data.msg);
+            console.log('Error:', data);
 
         } else {
-            toast.error("Error", {
-                description: "Please try again later!"
-            });
-            console.log('Error: ' + response.status);
+            toast.error(data.msg);
+            console.log('Error:', data);
         }
     } catch (error) {
-        toast.error("Error", {
-            description: "Internal error, please try again later!"
-        });
+        toast.error("Internal server error");
         console.error('Error:', error);
     } finally {
         setLoading(false);

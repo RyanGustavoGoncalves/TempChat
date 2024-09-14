@@ -43,7 +43,7 @@ public class UserService {
 
             GenericError state = UserChecker(user.username(), user.email());
             if (state.code() != 200) {
-                throw new AccountLockedException(state.message());
+                throw new IllegalArgumentException(state.message());
             }
 
             // Verificar se o arquivo não está vazio ou nulo
