@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Github } from "lucide-react";
 import ButtonLoading from "@/global/assets/components/buttonLoading/ButtonLoading";
-import { ModeToggle } from "@/components/ModeToggle";
-import Navbar from "@/global/assets/components/navbar/Navbar";
 
 interface FormData {
     username: string;
