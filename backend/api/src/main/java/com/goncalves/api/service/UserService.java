@@ -1,6 +1,7 @@
 package com.goncalves.api.service;
 
 import com.goncalves.api.DTO.DataUser;
+import com.goncalves.api.DTO.DataUserStorage;
 import com.goncalves.api.DTO.GenericError;
 import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
@@ -212,10 +213,12 @@ public class UserService {
             // Gera um token JWT para o usuário autenticado
             return new TokenDTO(
                     tokenService.generateToken((User) authentication.getPrincipal()),
-                    ((User) authentication.getPrincipal()).getId(),
-                    userDetails.getUsername(),
-                    ((User) authentication.getPrincipal()).getEmail(),
-                    ((User) authentication.getPrincipal()).getPicture()
+                    new DataUserStorage(
+                            ((User) authentication.getPrincipal()).getId(),
+                            userDetails.getUsername(),
+                            ((User) authentication.getPrincipal()).getEmail(),
+                            ((User) authentication.getPrincipal()).getPicture()
+                    )
             );
 
         } catch (IllegalArgumentException e) {

@@ -16,8 +16,7 @@ export const loginUser = async (e: React.FormEvent<HTMLFormElement>, credential:
         if (response.ok) {
             toast.success("Sucessfully logged in!");
             localStorage.setItem("token", data.token);
-            localStorage.setItem("data_user", JSON.stringify(data.id, data.username, data.email));
-            localStorage.setItem("path_picture_user", data.path);
+            localStorage.setItem("user", JSON.stringify(data.user));
 
             // window.location.href = '/auth/login';
         } else {
