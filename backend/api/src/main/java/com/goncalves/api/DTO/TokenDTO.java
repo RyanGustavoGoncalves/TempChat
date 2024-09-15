@@ -1,4 +1,4 @@
 package com.goncalves.api.DTO;
 
-public record TokenDTO(String token) {
+public record TokenDTO(String token, DataUserStorage user) {
 }

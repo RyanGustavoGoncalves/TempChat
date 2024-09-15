@@ -1,13 +1,16 @@
 package com.goncalves.api.service;
 
 import com.goncalves.api.DTO.DataUser;
+import com.goncalves.api.DTO.DataUserStorage;
 import com.goncalves.api.DTO.GenericError;
+import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.login.AccountLockedException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -43,7 +49,12 @@ public class UserService {
 
             GenericError state = UserChecker(user.username(), user.email());
             if (state.code() != 200) {
-                throw new AccountLockedException(state.message());
+                throw new IllegalArgumentException(state.message());
+            }
+
+            GenericError passwordSate = CheckingSpecialCharacters(user.password());
+            if (passwordSate.code() != 200) {
+                throw new IllegalArgumentException(passwordSate.message());
             }
 
             // Verificar se o arquivo não está vazio ou nulo
@@ -99,9 +110,7 @@ public class UserService {
     }
 
     public static GenericError validUser(DataUser user) {
-        if (user.password() == null || user.password().length() < 8) {
-            return new GenericError(400, "Password must have at least 8 characters");
-        }
+
         if (user.username() == null || user.username().length() < 3) {
             return new GenericError(400, "Username must have at least 3 characters");
         }
@@ -111,17 +120,62 @@ public class UserService {
         return new GenericError(200, "User is valid");
     }
 
-    public GenericError UserChecker(String username, String email){
+    public GenericError UserChecker(String username, String email) {
         UserDetails user = userRepository.findByUsername(username);
-        if(user != null){
+        if (user != null) {
             return new GenericError(409, "Username already exists");
         }
         User user2 = userRepository.findByEmail(email);
-        if(user2 != null){
+        if (user2 != null) {
             return new GenericError(409, "Email already exists");
         }
         return new GenericError(200, "User is valid");
     }
+
+    public static GenericError CheckingSpecialCharacters(String password) {
+        List<String> errors = new ArrayList<>();
+        String templateMessage = "The password must contain at least";
+
+        // Verifica o comprimento mínimo
+        if (password.length() < 8) {
+            errors.add("8 characters.");
+        }
+
+        // Verifica se contém letra maiúscula
+        if (!password.matches(".*[A-Z].*")) {
+            errors.add("a capital letter.");
+        }
+
+        // Verifica se contém letra minúscula
+        if (!password.matches(".*[a-z].*")) {
+            errors.add("a lowercase letter.");
+        }
+
+        // Verifica se contém número
+        if (!password.matches(".*[0-9].*")) {
+            errors.add("a number.");
+        }
+
+        // Verifica se contém caractere especial
+        if (!password.matches(".*[!@#$%^&+=].*")) {
+            errors.add("a special character (!@#$%^&+=).");
+        }
+
+        // Verifica se contém espaços em branco
+        if (password.matches(".*\\s.*")) {
+            errors.add("The password should not contain blank spaces.");
+        }
+
+        // Retorna os erros específicos ou valida a senha
+        if (errors.isEmpty()) {
+            return new GenericError(200, "Senha válida.");
+        } else {
+            // Retorna somente os erros referentes aos critérios não atendidos
+            String errorMessage = String.join(" ", errors);
+            return new GenericError(400, templateMessage + " " + errorMessage);
+        }
+    }
+
 
     /**
      * Autentica um usuário com base em suas credenciais (email ou nome de usuário) e senha,
@@ -130,16 +184,11 @@ public class UserService {
      * @param credential O email ou nome de usuário fornecido pelo usuário.
      * @param password   A senha fornecida pelo usuário.
      * @return Um token JWT se a autenticação for bem-sucedida.
-     * @throws UsernameNotFoundException Se o usuário não for encontrado.
-     * @throws BadCredentialsException   Se as credenciais forem inválidas.
-     * @throws DisabledException         Se a conta do usuário estiver desabilitada.
-     * @throws RuntimeException          Se ocorrer um erro inesperado durante o login.
      */
-    public String login(String credential, String password) {
+    public TokenDTO login(String credential, String password) {
         try {
             // Tenta localizar o usuário pelo email fornecido
             var user = userRepository.findByEmail(credential);
-
             UserDetails userDetails;
 
             // Se o usuário for encontrado pelo email, usa o nome de usuário associado
@@ -152,7 +201,7 @@ public class UserService {
 
             // Se o usuário não for encontrado, lança uma exceção
             if (userDetails == null) {
-                throw new UsernameNotFoundException("User not found with credential: " + credential);
+                throw new IllegalArgumentException("User not found with credential: " + credential);
             }
 
             // Cria um token de autenticação baseado no nome de usuário e senha fornecidos
@@ -162,20 +211,23 @@ public class UserService {
             var authentication = authenticationManager.authenticate(authenticationToken);
 
             // Gera um token JWT para o usuário autenticado
-            return tokenService.generateToken((User) authentication.getPrincipal());
-        } catch (UsernameNotFoundException e) {
-            // Tratamento de erro para quando o usuário não for encontrado
-            throw new UsernameNotFoundException("User not found with credential: " + credential, e);
-        } catch (BadCredentialsException e) {
-            // Tratamento de erro para quando as credenciais forem inválidas
-            throw new BadCredentialsException("Invalid credentials", e);
-        } catch (DisabledException e) {
-            // Tratamento de erro para quando a conta estiver desabilitada
-            throw new DisabledException("User account is disabled", e);
+            return new TokenDTO(
+                    tokenService.generateToken((User) authentication.getPrincipal()),
+                    new DataUserStorage(
+                            ((User) authentication.getPrincipal()).getId(),
+                            userDetails.getUsername(),
+                            ((User) authentication.getPrincipal()).getEmail(),
+                            ((User) authentication.getPrincipal()).getPicture()
+                    )
+            );
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (AuthenticationException e) {
+            throw new IllegalArgumentException("Credential or password is invalid");
         } catch (Exception e) {
-            // Tratamento de erro genérico para qualquer outra exceção inesperada
+            // Tratar outras exceções
             throw new RuntimeException("An unexpected error occurred during user login", e);
         }
     }
-
 }
