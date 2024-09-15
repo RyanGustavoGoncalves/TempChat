@@ -100,7 +100,7 @@ public class UserController {
     @Operation(summary = "Authenticate a user and return a JWT token", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authentication successful. Returns a JWT token."),
-            @ApiResponse(responseCode = "400", description = "Credential and password must be provided."),
+            @ApiResponse(responseCode = "401", description = "Credential and password must be provided."),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
     })
     public ResponseEntity<?> login(@RequestBody @Valid DataUserLogin userLoginData) {
@@ -113,7 +113,12 @@ public class UserController {
 
             // Autentica o usuário usando o serviço de login e retorna um token JWT na resposta 200 (OK)
             return ResponseEntity.ok()
-                    .body(new TokenDTO(userService.login(userLoginData.credential(), userLoginData.password())));
+                    .body(userService.login(userLoginData.credential(), userLoginData.password()));
+
+        }catch (IllegalArgumentException e) {
+            // Captura exceções de validação de dados e retorna uma resposta 400 (Bad Request) com a mensagem de erro
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new GenericReturnError("Login", e.getMessage()));
         } catch (Exception e) {
             // Captura qualquer exceção inesperada e retorna uma resposta 500 (Internal Server Error) com a mensagem de erro
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

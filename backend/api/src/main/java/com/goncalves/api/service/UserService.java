@@ -2,12 +2,14 @@ package com.goncalves.api.service;
 
 import com.goncalves.api.DTO.DataUser;
 import com.goncalves.api.DTO.GenericError;
+import com.goncalves.api.DTO.TokenDTO;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -169,7 +171,7 @@ public class UserService {
         } else {
             // Retorna somente os erros referentes aos critérios não atendidos
             String errorMessage = String.join(" ", errors);
-            return new GenericError(400, templateMessage +  " " + errorMessage);
+            return new GenericError(400, templateMessage + " " + errorMessage);
         }
     }
 
@@ -181,16 +183,11 @@ public class UserService {
      * @param credential O email ou nome de usuário fornecido pelo usuário.
      * @param password   A senha fornecida pelo usuário.
      * @return Um token JWT se a autenticação for bem-sucedida.
-     * @throws UsernameNotFoundException Se o usuário não for encontrado.
-     * @throws BadCredentialsException   Se as credenciais forem inválidas.
-     * @throws DisabledException         Se a conta do usuário estiver desabilitada.
-     * @throws RuntimeException          Se ocorrer um erro inesperado durante o login.
      */
-    public String login(String credential, String password) {
+    public TokenDTO login(String credential, String password) {
         try {
             // Tenta localizar o usuário pelo email fornecido
             var user = userRepository.findByEmail(credential);
-
             UserDetails userDetails;
 
             // Se o usuário for encontrado pelo email, usa o nome de usuário associado
@@ -203,7 +200,7 @@ public class UserService {
 
             // Se o usuário não for encontrado, lança uma exceção
             if (userDetails == null) {
-                throw new UsernameNotFoundException("User not found with credential: " + credential);
+                throw new IllegalArgumentException("User not found with credential: " + credential);
             }
 
             // Cria um token de autenticação baseado no nome de usuário e senha fornecidos
@@ -213,20 +210,21 @@ public class UserService {
             var authentication = authenticationManager.authenticate(authenticationToken);
 
             // Gera um token JWT para o usuário autenticado
-            return tokenService.generateToken((User) authentication.getPrincipal());
-        } catch (UsernameNotFoundException e) {
-            // Tratamento de erro para quando o usuário não for encontrado
-            throw new UsernameNotFoundException("User not found with credential: " + credential, e);
-        } catch (BadCredentialsException e) {
-            // Tratamento de erro para quando as credenciais forem inválidas
-            throw new BadCredentialsException("Invalid credentials", e);
-        } catch (DisabledException e) {
-            // Tratamento de erro para quando a conta estiver desabilitada
-            throw new DisabledException("User account is disabled", e);
+            return new TokenDTO(
+                    tokenService.generateToken((User) authentication.getPrincipal()),
+                    ((User) authentication.getPrincipal()).getId(),
+                    userDetails.getUsername(),
+                    ((User) authentication.getPrincipal()).getEmail(),
+                    ((User) authentication.getPrincipal()).getPicture()
+            );
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (AuthenticationException e) {
+            throw new IllegalArgumentException("Credential or password is invalid");
         } catch (Exception e) {
-            // Tratamento de erro genérico para qualquer outra exceção inesperada
+            // Tratar outras exceções
             throw new RuntimeException("An unexpected error occurred during user login", e);
         }
     }
-
 }

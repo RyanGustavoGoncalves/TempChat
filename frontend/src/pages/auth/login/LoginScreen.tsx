@@ -7,37 +7,15 @@ import { Github } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { verifyType } from "@/global/assets/utils/verifyType/verifyType";
 import ButtonShowPassword from "../assets/components/ButtonShowPassword";
+import { loginUser } from "./assets/utils/loginUser";
 
 const LoginScreen = () => {
-    const [crendential, setCrendential] = useState("");
+    const [credential, setCredential] = useState("");
     const [password, setPassword] = useState("");
     const [passwordPreview, setPasswordPreview] = useState(false);
-    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Consome o endpoint de login
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/user/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ crendential, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-
-                navigate("/dashboard");
-            } else {
-                alert("Credenciais inválidas. Tente novamente.");
-            }
-        } catch (error) {
-            console.error("Erro ao fazer login:", error);
-            alert("Ocorreu um erro no login. Por favor, tente novamente mais tarde.");
-        }
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        loginUser(e, credential, password);
     };
 
     return (
@@ -55,11 +33,11 @@ const LoginScreen = () => {
                             <Label htmlFor="email">Email or Username</Label>
                             <Input
                                 id="crendential"
-                                type={verifyType(crendential)}
+                                type={verifyType(credential)}
                                 placeholder="m@example.com"
                                 required
-                                value={crendential}
-                                onChange={(e) => setCrendential(e.target.value)}
+                                value={credential}
+                                onChange={(e) => setCredential(e.target.value)}
                             />
                         </div>
                         <div className="grid gap-2">
