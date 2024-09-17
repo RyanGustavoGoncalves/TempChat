@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 
 @Slf4j
 @Tag(name = "/user")
@@ -34,6 +36,12 @@ public class UserController {
     public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<User>> getAll() {
+        List<User> users = userService.getAll(userRepository.findAll());
+        return ResponseEntity.ok(users);
     }
 
     /**

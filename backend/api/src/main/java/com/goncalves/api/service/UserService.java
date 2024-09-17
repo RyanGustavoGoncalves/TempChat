@@ -230,4 +230,15 @@ public class UserService {
             throw new RuntimeException("An unexpected error occurred during user login", e);
         }
     }
+
+    public List<User> getAll(List<User> users) {
+        List<User> userFormatted = new ArrayList<>();
+
+        for (User user : users) {
+            user.setPassword("");
+            userFormatted.add(user);
+        }
+
+        return userFormatted;
+    }
 }
