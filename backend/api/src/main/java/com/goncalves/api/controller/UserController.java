@@ -1,9 +1,6 @@
 package com.goncalves.api.controller;
 
-import com.goncalves.api.DTO.DataUser;
-import com.goncalves.api.DTO.DataUserLogin;
-import com.goncalves.api.DTO.GenericReturnError;
-import com.goncalves.api.DTO.TokenDTO;
+import com.goncalves.api.DTO.*;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
 import com.goncalves.api.service.UserService;
@@ -14,9 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,10 +39,28 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+
+    /**
+     * Endpoint para retornar todos os usuários cadastrados no banco de dados.
+     * Este endpoint retorna uma lista de usuários limpando o campo password em um ResponseEntity com status 200 (OK).
+     *
+     * @return ResponseEntity<List < User>> Um ResponseEntity contendo a lista de usuários cadastrados no banco de dados.
+     * @see UserService#getAll(List) Método que limpa o campo password de uma lista de usuários.
+     * @see UserRepository#findAll() Método que retorna todos os usuários cadastrados no banco de dados.
+     * @see User Classe que representa um usuário no sistema.
+     */
     @GetMapping("/get/all")
-    public ResponseEntity<List<User>> getAll() {
-        List<User> users = userService.getAll(userRepository.findAll());
-        return ResponseEntity.ok(users);
+    @Operation(summary = "Get all users", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns a list of all users."),
+            @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
+    })
+    public ResponseEntity<Page<DataAllUser>> getAll(@PageableDefault(size = Integer.MAX_VALUE, sort = {"creationAccount"}) Pageable paginacao) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Obtém a página de usuários paginada a partir do repositório e mapeia para DTOs correspondentes
+        var page = userRepository.findAllByUsernameIsNot(user.getUsername(),paginacao).map(DataAllUser::new);
+        // Retorna a página de usuários paginada dentro de um ResponseEntity
+        return ResponseEntity.ok(page);
     }
 
     /**
@@ -123,7 +142,7 @@ public class UserController {
             return ResponseEntity.ok()
                     .body(userService.login(userLoginData.credential(), userLoginData.password()));
 
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             // Captura exceções de validação de dados e retorna uma resposta 400 (Bad Request) com a mensagem de erro
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new GenericReturnError("Login", e.getMessage()));

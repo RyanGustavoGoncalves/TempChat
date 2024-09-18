@@ -44,6 +44,14 @@ public class User implements UserDetails {
         this.dateCreation = dateCreation;
     }
 
+    public User(Long id, String username, String email, String picture, Date dateCreation) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.picture = picture;
+        this.dateCreation = dateCreation;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

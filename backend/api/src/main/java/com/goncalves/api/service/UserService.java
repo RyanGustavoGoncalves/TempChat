@@ -217,7 +217,8 @@ public class UserService {
                             ((User) authentication.getPrincipal()).getId(),
                             userDetails.getUsername(),
                             ((User) authentication.getPrincipal()).getEmail(),
-                            ((User) authentication.getPrincipal()).getPicture()
+                            ((User) authentication.getPrincipal()).getPicture(),
+                            ((User) authentication.getPrincipal()).getDateCreation()
                     )
             );
 
