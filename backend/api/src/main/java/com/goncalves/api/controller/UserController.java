@@ -44,7 +44,7 @@ public class UserController {
      * Endpoint para retornar todos os usuários cadastrados no banco de dados.
      * Este endpoint retorna uma lista de usuários limpando o campo password em um ResponseEntity com status 200 (OK).
      *
-     * @return ResponseEntity<List < User>> Um ResponseEntity contendo a lista de usuários cadastrados no banco de dados.
+     * @return ResponseEntity<Page<DataAllUser>> Um ResponseEntity contendo a lista de usuários cadastrados no banco de dados.
      * @see UserService#getAll(List) Método que limpa o campo password de uma lista de usuários.
      * @see UserRepository#findAll() Método que retorna todos os usuários cadastrados no banco de dados.
      * @see User Classe que representa um usuário no sistema.
@@ -55,7 +55,10 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Returns a list of all users."),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
     })
-    public ResponseEntity<Page<DataAllUser>> getAll(@PageableDefault(size = Integer.MAX_VALUE, sort = {"creationAccount"}) Pageable paginacao) {
+    public ResponseEntity<Page<DataAllUser>> getAll(
+            @PageableDefault(size = 10,
+                    sort = {"dateCreation"}) Pageable paginacao
+    ) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Obtém a página de usuários paginada a partir do repositório e mapeia para DTOs correspondentes
         var page = userRepository.findAllByUsernameIsNot(user.getUsername(),paginacao).map(DataAllUser::new);
