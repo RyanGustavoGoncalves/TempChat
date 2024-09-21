@@ -1,29 +1,22 @@
 package com.goncalves.api.service;
 
-import com.goncalves.api.DTO.DataUser;
-import com.goncalves.api.DTO.DataUserStorage;
-import com.goncalves.api.DTO.GenericError;
-import com.goncalves.api.DTO.TokenDTO;
+import com.goncalves.api.DTO.*;
 import com.goncalves.api.model.user.User;
 import com.goncalves.api.model.user.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.security.auth.login.AccountLockedException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -232,14 +225,67 @@ public class UserService {
         }
     }
 
-    public List<User> getAll(List<User> users) {
-        List<User> userFormatted = new ArrayList<>();
+    public User updatedUser(@Valid DataUserUpdated data, MultipartFile file, User user) {
+        try {
+            if (data.email() != null && !data.email().isEmpty()) {
+                user.setEmail(data.email());
+            }
+            GenericError passwordSate = CheckingSpecialCharacters(data.password());
 
-        for (User user : users) {
-            user.setPassword("");
-            userFormatted.add(user);
+            if (passwordSate.code() != 200) {
+                throw new IllegalArgumentException(passwordSate.message());
+            }
+
+            user.setPassword(new BCryptPasswordEncoder().encode(data.password()));
+
+            if (data.picture() != null && !data.picture().isEmpty()) {
+                String filePath = null;
+                if (file != null && !file.isEmpty()) {
+
+                    // Create the directory if it doesn't exist
+                    File directory = new File(IMAGE_FOLDER);
+                    if (!directory.exists()) {
+                        if (!directory.mkdirs()) {
+                            throw new RuntimeException("Failed to create directory");
+                        }
+                    }
+
+                    // Get the original file name
+                    String originalFilename = file.getOriginalFilename();
+                    if (originalFilename == null || originalFilename.isEmpty()) {
+                        throw new IllegalArgumentException("File name must not be empty");
+                    }
+
+                    // Define the full path to save the file
+                    filePath = IMAGE_FOLDER + System.currentTimeMillis() + "_" + originalFilename;
+                    File destinationFile = new File(filePath);
+
+                    // Save the new file
+                    file.transferTo(destinationFile.getAbsoluteFile());
+
+                    // **Delete the old image if it exists**
+                    if (user.getPicture() != null && !user.getPicture().isEmpty()) {
+                        File oldFile = new File(user.getPicture());
+                        if (oldFile.exists()) {
+                            if (!oldFile.delete()) {
+                                throw new RuntimeException("Failed to delete old picture");
+                            }
+                        }
+                    }
+
+                    // Set the new picture path to the user
+                    user.setPicture(filePath);
+                }
+            }
+
+            return userRepository.save(user);
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (InternalError | IOException e) {
+            // Handle other exceptions
+            throw new RuntimeException("An unexpected error occurred during user update", e);
         }
-
-        return userFormatted;
     }
+
 }

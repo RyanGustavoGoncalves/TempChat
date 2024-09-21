@@ -44,10 +44,10 @@ public class UserController {
      * Endpoint para retornar todos os usuários cadastrados no banco de dados.
      * Este endpoint retorna uma lista de usuários limpando o campo password em um ResponseEntity com status 200 (OK).
      *
-     * @return ResponseEntity<Page<DataAllUser>> Um ResponseEntity contendo a lista de usuários cadastrados no banco de dados.
-     * @see UserService#getAll(List) Método que limpa o campo password de uma lista de usuários.
-     * @see UserRepository#findAll() Método que retorna todos os usuários cadastrados no banco de dados.
-     * @see User Classe que representa um usuário no sistema.
+     * @return ResponseEntity<Page < DataAllUser>> Um ResponseEntity contendo a lista de usuários cadastrados no banco de dados.
+     * @see DataAllUser Classe que encapsula os dados de um usuário para exibição.
+     * @see UserRepository Interface que estende JpaRepository para operações de banco de dados.
+     * @see User Classe que representa um usuário no banco de dados.
      */
     @GetMapping("/get/all")
     @Operation(summary = "Get all users", method = "GET")
@@ -61,9 +61,53 @@ public class UserController {
     ) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Obtém a página de usuários paginada a partir do repositório e mapeia para DTOs correspondentes
-        var page = userRepository.findAllByUsernameIsNot(user.getUsername(),paginacao).map(DataAllUser::new);
+        var page = userRepository.findAllByUsernameIsNot(user.getUsername(), paginacao).map(DataAllUser::new);
         // Retorna a página de usuários paginada dentro de um ResponseEntity
         return ResponseEntity.ok(page);
+    }
+
+    /**
+     * Endpoint para retornar um usuário específico com base em seu Token.
+     * Este endpoint retorna um usuário específico com base em seu Token em um ResponseEntity com status 200 (OK).
+     * O método realiza as seguintes operações:
+     * Obtenção do Usuário:
+     * - Obtém o usuário autenticado a partir do contexto de segurança.
+     * - Retorna o usuário autenticado em um ResponseEntity com status 200 (OK).
+     */
+    @GetMapping("/get")
+    @Operation(summary = "Get a specific user", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Returns a specific user."),
+            @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
+    })
+    public ResponseEntity<DataUserStorage> get() {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(
+                new DataUserStorage(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getPicture(),
+                        user.getDateCreation()
+                )
+        );
+    }
+
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> update(@RequestPart(value = "newUserData") @Valid DataUserUpdated data,
+                                    @RequestPart(value = "file", required = false) MultipartFile file) {
+        try {
+            var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User newUser = userService.updatedUser(data, file, user);
+
+            return ResponseEntity.ok(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new GenericReturnError("Update", e.getMessage()));
+        } catch (InternalError e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new GenericReturnError("Update", e.getMessage()));
+        }
     }
 
     /**
