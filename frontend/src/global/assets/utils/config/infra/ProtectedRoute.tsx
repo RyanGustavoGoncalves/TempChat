@@ -3,14 +3,13 @@ import { Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const ProtectedRoute = ({ element: Element, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     const checkToken = async () => {
 
       if (token) {
-        console.log("token", token);
 
         try {
           const response = await fetch(`${import.meta.env.VITE_API_URL}/token`, {
@@ -21,8 +20,6 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
             },
           });
           const responseBody = await response.json();
-          console.log(responseBody);
-
           if (response.ok) {
             setIsAuthenticated(true);
           } else {
@@ -39,7 +36,7 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
             description: "Error fetching token!",
           });
           console.error("Internal Error", error);
-          
+
 
           setIsAuthenticated(false);
         }
