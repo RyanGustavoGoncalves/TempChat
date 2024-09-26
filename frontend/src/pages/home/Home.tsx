@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { File, Home, LineChart, ListFilter, MessageCircle, MoreHorizontal, Package, Package2, PanelLeft, PlusCircle, Search, Settings, ShoppingCart, Users2 } from "lucide-react";
+import { File, Home, LineChart, ListFilter, MessageCircle, MoreHorizontal, Package, PanelLeft, PlusCircle, Search, ShoppingCart, Users2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
