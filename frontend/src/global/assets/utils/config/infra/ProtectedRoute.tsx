@@ -52,7 +52,6 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
     return null;
   }
 
-  console.log("isAuthenticated", isAuthenticated);
   return isAuthenticated ? <Element {...rest} /> : <Navigate to="/auth/login" />;
 
 };
