@@ -1,6 +1,6 @@
 import '../../global/assets/css/overflow.css';
 import HeaderContent from "@/global/assets/components/headerContent/HeaderContent";
-import { CircleUser, EllipsisVertical } from "lucide-react";
+import { CircleUser, EllipsisVertical, SendHorizonal } from "lucide-react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -115,7 +115,8 @@ const HomePage = () => {
                                 ))}
                             </CardContent>
                             <CardFooter>
-                                <Input type='text' placeholder='Type a message...' className='w-full rounded-lg bg-background' />
+                                <Input type='text' placeholder='Type a message...' className='w-full rounded-r bg-background' />
+                                <Button variant={"outline"} className='rounded-l'><SendHorizonal width={20} /></Button>
                             </CardFooter>
                         </div>
                     </Card>
