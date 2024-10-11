@@ -8,30 +8,23 @@ import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 
 const HomePage = () => {
 
     const items = [
-        { id: 1, name: 'Rodrigo Pereira Gonçalves' },
-        { id: 2, name: 'Maria Silva' },
-        { id: 3, name: 'João Souza' },
-        { id: 4, name: 'José Pereira' },
-        { id: 5, name: 'Ana Maria' },
-        { id: 6, name: 'Rodrigo Pereira Gonçalves' },
-        { id: 7, name: 'Maria Silva' },
-        { id: 8, name: 'João Souza' },
-        { id: 9, name: 'José Pereira' },
-        { id: 10, name: 'Ana Maria' },
-        { id: 11, name: 'Rodrigo Pereira Gonçalves' },
-        { id: 12, name: 'Maria Silva' },
-        { id: 13, name: 'João Souza' },
-        { id: 14, name: 'José Pereira' },
-        { id: 15, name: 'Ana Maria' },
-        { id: 16, name: 'Rodrigo Pereira Gonçalves' },
-        { id: 17, name: 'Maria Silva' },
-        { id: 18, name: 'João Souza' },
-        { id: 19, name: 'José Pereira' },
-        { id: 20, name: 'Ana Maria' },
+        { id: 1, name: 'Rodrigo Pereira Gonçalves', message: 'Hello World!' },
+        { id: 2, name: 'Carlos Eduardo Gonçalves', message: 'Oi Galera!' },
+        { id: 3, name: 'João Pedro Gonçalves', message: 'Hello World!' },
+        { id: 4, name: 'Maria Eduarda Gonçalves', message: 'Hello World!' },
+        { id: 5, name: 'Ana Clara Gonçalves', message: 'Hello World!' },
+        { id: 6, name: 'José Carlos Gonçalves', message: 'Hello World!' },
+        { id: 7, name: 'Rafaela Gonçalves', message: 'Hello World!' },
+        { id: 8, name: 'Gabriela Gonçalves', message: 'Hello World!' },
+        { id: 9, name: 'Lucas Gonçalves', message: 'Hello World!' },
+        { id: 10, name: 'Pedro Gonçalves', message: 'Implicações de Segurança: Conceder acesso de exclusão a tabelas do sistema pode representar riscos de segurança. Certifique-se de que isso é absolutamente necessário e avalie os impactos potenciais.' },
+        { id: 11, name: 'Paulo Gonçalves', message: 'To testando em World!' },
+        { id: 12, name: 'Paula Gonçalves', message: 'Políticas de acesso entre escopos impedem que sua aplicação exclua registros na tabela!' },
     ];
 
     return (
@@ -64,8 +57,8 @@ const HomePage = () => {
                     </nav>
                 </aside>
 
-                <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-                    <div className="flex justify-around items-center w-full">
+                <main className="flex flex-col flex-1 items-start gap-4 p-8 sm:px-6 sm:py-0 md:gap-8">
+                    <div className="flex justify-between items-center w-full ">
                         <Breadcrumb className="hidden md:flex">
                             <BreadcrumbList>
                                 <BreadcrumbItem>
@@ -91,17 +84,41 @@ const HomePage = () => {
                         </div>
                     </div>
 
-                    <div className="grid gap-4 w-full
-                sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        {items.map((item, index) => (
-                            <div key={item.id} className="flex flex-col items-center p-4 bg-background rounded-lg shadow-md">
-                                <CircleUser className="w-20" />
-                                <span className="text-lg text-muted-foreground truncate w-4/5 text-center">
-                                    {item.name}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                    <Card className='w-full h-full flex flex-col gap-8'>
+                        <div>
+                            <CardHeader>
+                                <div className='flex justify-between'>
+                                    <div className='flex gap-2 items-center cursor-pointer'>
+                                        <CircleUser />
+                                        <h3>Ryan Gonçalves</h3>
+                                    </div>
+                                    <div>
+                                        <EllipsisVertical width={16} />
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <Separator orientation='horizontal' />
+                        </div>
+
+                        <div className='flex flex-col justify-between h-full'>
+                            <CardContent className='grid gap-2'>
+                                {items.map((item, index) => (
+                                    <React.Fragment key={item.id}>
+                                        <div className='grid gap-2 w-1/2 bg-secondary rounded-sm p-2 px-2'>
+                                            <div className='flex gap-2 items-center cursor-pointer'>
+                                                <CircleUser />
+                                                <h3>{item.name}</h3>
+                                            </div>
+                                            <span className='text-justify px-4'>{item.message}</span>
+                                        </div>
+                                    </React.Fragment>
+                                ))}
+                            </CardContent>
+                            <CardFooter>
+                                <Input type='text' placeholder='Type a message...' className='w-full rounded-lg bg-background' />
+                            </CardFooter>
+                        </div>
+                    </Card>
                 </main>
             </div>
         </div >
