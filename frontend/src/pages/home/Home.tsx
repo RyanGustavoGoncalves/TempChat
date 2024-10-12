@@ -31,6 +31,13 @@ const HomePage = () => {
         { id: 17, name: 'Pedro Gonçalves', message: 'Hello World!' },
         { id: 18, name: 'Paulo Gonçalves', message: 'Hello World!' },
         { id: 19, name: 'Paula Gonçalves', message: 'Hello World!' },
+        { id: 20, name: 'Rafael Gonçalves', message: 'Hello World!' },
+        { id: 21, name: 'Rafaela Gonçalves', message: 'Hello World!' },
+        { id: 22, name: 'Gabriela Gonçalves', message: 'Hello World!' },
+        { id: 23, name: 'Lucas Gonçalves', message: 'Hello World!' },
+        { id: 24, name: 'Pedro Gonçalves', message: 'Hello World!' },
+        { id: 25, name: 'Paulo Gonçalves', message: 'Hello World!' },
+        { id: 26, name: 'Paula Gonçalves', message: 'Hello World!' },
 
     ];
 
@@ -39,8 +46,8 @@ const HomePage = () => {
             <div className="flex">
                 <HeaderContent />
                 <aside className="hidden flex-col border-r bg-background sm:flex w-80 h-screen overflow-auto menu-overflow">
-                    <nav className="grid gap-6 p-6">
-                        <div className="flex justify-between">
+                    <nav className="grid gap-2 px-6">
+                        <div className="flex justify-between items-center sticky top-0 p-1 h-14 bg-background">
                             <span className="text-lg">Conversations</span>
                             <EllipsisVertical width={16} />
                         </div>
