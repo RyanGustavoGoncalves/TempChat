@@ -1,33 +1,28 @@
-import { useState, useEffect, ComponentType } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-interface ProtectedRouteProps {
-  element: ComponentType<any>;
-  [key: string]: any;
-}
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Element, ...rest }) => {
+const ProtectedRoute = ({ element: Element, ...rest }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     const checkToken = async () => {
+
       if (token) {
+
         try {
-          const response = await fetch(`${process.env.SPRING_APP_URL}/token`, {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/token`, {
+            method: 'GET',
             headers: {
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
           });
-
+          const responseBody = await response.json();
           if (response.ok) {
-            const responseBody = await response.json();
-            const role = responseBody.role;
-            localStorage.setItem('role', role);
             setIsAuthenticated(true);
           } else {
-            localStorage.removeItem('role');
             setIsAuthenticated(false);
 
             // Exibir alerta de erro
@@ -40,12 +35,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Element, ...re
           toast.error("Error", {
             description: "Error fetching token!",
           });
+          console.error("Internal Error", error);
 
-          localStorage.removeItem('role');
+
           setIsAuthenticated(false);
         }
       } else {
-        localStorage.removeItem('role');
         setIsAuthenticated(false);
       }
     };
@@ -58,6 +53,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Element, ...re
   }
 
   return isAuthenticated ? <Element {...rest} /> : <Navigate to="/auth/login" />;
+
 };
 
 export default ProtectedRoute;

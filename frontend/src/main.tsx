@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './global/assets/css/index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './pages/home/Home.tsx'
 import ErrorNotFoundPage from './pages/error/notFoundPage/ErrorNotFoundPage.tsx'
 import ProtectedRoute from './global/assets/utils/config/infra/ProtectedRoute.tsx'
 import RegisterScreen from './pages/auth/register/RegisterScreen.tsx'
 import LoginScreen from './pages/auth/login/LoginScreen.tsx'
 import { ThemeProvider } from './components/ThemeProviderContext.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import HomePage from './pages/home/Home.tsx'
 
 const router = createBrowserRouter([
   {
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "Home",
-        element: <Home />,
+        element: <HomePage />,
       },
     ],
   },
