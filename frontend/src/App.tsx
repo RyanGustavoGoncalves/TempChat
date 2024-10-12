@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
 import Navbar from './global/assets/components/navbar/Navbar';
-import { Outlet } from 'react-router-dom';
+import HomePage from './pages/home/Home';
 
 const App: React.FC = () => {
 
   return (
     <>
       <Navbar />
-      <Outlet />
+      <HomePage />
     </>
   );
 };
