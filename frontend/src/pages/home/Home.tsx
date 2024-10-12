@@ -25,6 +25,14 @@ const HomePage = () => {
         { id: 10, name: 'Pedro Gonçalves', message: 'Implicações de Segurança: Conceder acesso de exclusão a tabelas do sistema pode representar riscos de segurança. Certifique-se de que isso é absolutamente necessário e avalie os impactos potenciais.' },
         { id: 11, name: 'Paulo Gonçalves', message: 'To testando em World!' },
         { id: 12, name: 'Paula Gonçalves', message: 'Políticas de acesso entre escopos impedem que sua aplicação exclua registros na tabela!' },
+        { id: 13, name: 'Rafael Gonçalves', message: 'Hello World!' },
+        { id: 14, name: 'Rafaela Gonçalves', message: 'Hello World!' },
+        { id: 15, name: 'Gabriela Gonçalves', message: 'Hello World!' },
+        { id: 16, name: 'Lucas Gonçalves', message: 'Hello World!' },
+        { id: 17, name: 'Pedro Gonçalves', message: 'Hello World!' },
+        { id: 18, name: 'Paulo Gonçalves', message: 'Hello World!' },
+        { id: 19, name: 'Paula Gonçalves', message: 'Hello World!' },
+
     ];
 
     return (
@@ -57,7 +65,7 @@ const HomePage = () => {
                     </nav>
                 </aside>
 
-                <main className="flex flex-col flex-1 items-start gap-4 p-8 sm:px-6 sm:py-0 md:gap-8">
+                <main className="flex flex-col flex-1 items-start gap-4 md:p-8 sm:px-6 sm:py-0 md:gap-8">
                     <div className="flex justify-between items-center w-full ">
                         <Breadcrumb className="hidden md:flex">
                             <BreadcrumbList>
@@ -84,7 +92,7 @@ const HomePage = () => {
                         </div>
                     </div>
 
-                    <Card className='w-full h-full flex flex-col gap-8'>
+                    <Card className='w-full h-full flex flex-col gap-2'>
                         <div>
                             <CardHeader>
                                 <div className='flex justify-between'>
@@ -101,7 +109,7 @@ const HomePage = () => {
                         </div>
 
                         <div className='flex flex-col justify-between h-full'>
-                            <CardContent className='grid gap-2'>
+                            <CardContent className='grid gap-2 max-h-[40rem] overflow-auto menu-overflow'>
                                 {items.map((item, index) => (
                                     <React.Fragment key={item.id}>
                                         <div className='grid gap-2 w-1/2 bg-secondary rounded-sm p-2 px-2'>
@@ -114,7 +122,7 @@ const HomePage = () => {
                                     </React.Fragment>
                                 ))}
                             </CardContent>
-                            <CardFooter>
+                            <CardFooter className=''>
                                 <Input type='text' placeholder='Type a message...' className='w-full rounded-r bg-background' />
                                 <Button variant={"outline"} className='rounded-l'><SendHorizonal width={20} /></Button>
                             </CardFooter>
