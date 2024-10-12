@@ -5,8 +5,12 @@ import { MessageCircle, PanelLeft } from "lucide-react";
 import UserProfile from "../userProfile/UserProfile";
 import { ModeToggle } from "@/components/ModeToggle";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { logout } from "../../utils/logout/logout";
 
 const HeaderContent = () => {
+    /**
+     * This navbar mobile component is responsible for rendering the header of the application.
+     */
     return (
         <header className="sticky top-0 z-100 p-6 flex h-screen gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <Sheet>
@@ -42,7 +46,7 @@ const HeaderContent = () => {
                                         <DropdownMenuItem>Settings</DropdownMenuItem>
                                         <DropdownMenuItem>Support</DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => { logout() }}>Logout</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <span>{JSON.parse(localStorage.getItem('user')).username}</span>

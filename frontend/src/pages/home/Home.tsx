@@ -1,7 +1,6 @@
 import '../../global/assets/css/overflow.css';
 import HeaderContent from "@/global/assets/components/headerContent/HeaderContent";
 import { CircleUser, EllipsisVertical, SendHorizonal } from "lucide-react";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -66,32 +65,6 @@ const HomePage = () => {
                 </aside>
 
                 <main className="flex flex-col flex-1 items-start gap-4 md:p-8 sm:px-6 sm:py-0 md:gap-8">
-                    <div className="flex justify-between items-center w-full ">
-                        <Breadcrumb className="hidden md:flex">
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink asChild>
-                                        <Link to="#">Overview</Link>
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink asChild>
-                                        <Link to="#">All</Link>
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                        <div className="relative flex-1 md:grow-0">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                type="search"
-                                placeholder="Search..."
-                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                            />
-                        </div>
-                    </div>
-
                     <Card className='w-full h-full flex flex-col gap-2'>
                         <div>
                             <CardHeader>
@@ -100,7 +73,16 @@ const HomePage = () => {
                                         <CircleUser />
                                         <h3>Ryan Gonçalves</h3>
                                     </div>
-                                    <div>
+                                    <div className='flex items-center gap-4'>
+                                        <div className="relative flex-1 md:grow-0">
+                                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                type="search"
+                                                placeholder="Search..."
+                                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                            />
+                                        </div>
+
                                         <EllipsisVertical width={16} />
                                     </div>
                                 </div>
@@ -109,7 +91,7 @@ const HomePage = () => {
                         </div>
 
                         <div className='flex flex-col justify-between h-full'>
-                            <CardContent className='grid gap-2 max-h-[40rem] overflow-auto menu-overflow'>
+                            <CardContent className='grid gap-2 max-h-[45rem] overflow-auto menu-overflow'>
                                 {items.map((item, index) => (
                                     <React.Fragment key={item.id}>
                                         <div className='grid gap-2 w-1/2 bg-secondary rounded-sm p-2 px-2'>
