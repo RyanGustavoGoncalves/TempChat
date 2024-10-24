@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 const HomePage = () => {
 
@@ -71,7 +72,7 @@ const HomePage = () => {
                     </nav>
                 </aside>
 
-                <main className="flex flex-col flex-1 items-start gap-4 md:p-8 sm:px-6 sm:py-0 md:gap-8">
+                <main className="flex flex-col flex-1 items-start gap-4 md:p-4 sm:px-6 sm:py-0 md:gap-8">
                     <Card className='w-full h-full flex flex-col gap-2'>
                         <div>
                             <CardHeader>
@@ -90,7 +91,7 @@ const HomePage = () => {
                                             />
                                         </div>
 
-                                        <EllipsisVertical width={16} />
+                                        <EllipsisVertical width={16} onClick={() => toast.success('TESTE')}/>
                                     </div>
                                 </div>
                             </CardHeader>

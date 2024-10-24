@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -285,6 +287,18 @@ public class UserService {
         } catch (InternalError | IOException e) {
             // Handle other exceptions
             throw new RuntimeException("An unexpected error occurred during user update", e);
+        }
+    }
+
+    public BufferedImage getImg(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            throw new IllegalArgumentException("File not found: " + path);
+        }
+        try {
+            return ImageIO.read(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading the image file", e);
         }
     }
 

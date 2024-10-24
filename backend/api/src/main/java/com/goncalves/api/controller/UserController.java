@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 
@@ -80,14 +81,15 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Returns a specific user."),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
     })
-    public ResponseEntity<DataUserStorage> get() {
+    public ResponseEntity<DataUserImage> get() {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        BufferedImage picture = userService.getImg(user.getPicture());
         return ResponseEntity.ok(
-                new DataUserStorage(
+                new DataUserImage(
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
-                        user.getPicture(),
+                        picture,
                         user.getDateCreation()
                 )
         );

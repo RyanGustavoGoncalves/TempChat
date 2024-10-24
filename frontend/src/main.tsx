@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider storageKey="vite-ui-theme">
       <RouterProvider router={router} />
-      <Toaster closeButton={true} richColors visibleToasts={5} expand={true} />
+      <Toaster closeButton={true} richColors visibleToasts={5} expand={false} />
     </ThemeProvider>
   </React.StrictMode>,
 )
