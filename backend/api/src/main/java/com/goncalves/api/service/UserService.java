@@ -12,11 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -290,15 +290,21 @@ public class UserService {
         }
     }
 
-    public BufferedImage getImg(String path) {
+    public String getImageBase64(String path) {
         File file = new File(path);
         if (!file.exists()) {
-            throw new IllegalArgumentException("File not found: " + path);
+            throw new IllegalArgumentException("Arquivo não encontrado: " + path);
         }
         try {
-            return ImageIO.read(file);
+            // Ler os bytes do arquivo de imagem
+            byte[] imageBytes = Files.readAllBytes(file.toPath());
+
+            // Codificar os bytes em uma string Base64
+            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+            return base64Image;
         } catch (IOException e) {
-            throw new RuntimeException("Error reading the image file", e);
+            throw new RuntimeException("Erro ao ler o arquivo de imagem", e);
         }
     }
 

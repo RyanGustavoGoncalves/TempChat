@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserData } from '../../utils/getUserData/getUserData';
 
 interface User {
     username: string;
@@ -6,6 +7,21 @@ interface User {
 }
 
 const UserProfile: React.FC = () => {
+
+    const [data, setData] = useState<null>(null);
+    const [profileImageURL, setProfileImageURL] = useState<string | null>(null);
+
+    useEffect(() => {
+        getUserData().then((data) => {
+            setData(data);
+
+            if (data && data.picture) {
+                setProfileImageURL(`data:image/png;base64,${data.picture}`);
+            }
+        });
+    }, []);
+
+
     const userData = localStorage.getItem('user');
     const user: User | null = userData ? JSON.parse(userData) : null;
 
@@ -31,14 +47,17 @@ const UserProfile: React.FC = () => {
         );
     }
 
+
     return (
-        <img
-            src={user.picture}
-            width={36}
-            height={36}
-            alt="Avatar"
-            className="overflow-hidden rounded-full"
-        />
+        profileImageURL ? (
+            <img
+                src={profileImageURL}
+                width={36}
+                height={36}
+                alt="Avatar"
+                className="overflow-hidden rounded-full"
+            />
+        ) : null
     );
 };
 

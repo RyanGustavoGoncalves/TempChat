@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.awt.image.BufferedImage;
-import java.util.List;
 
 
 @Slf4j
@@ -81,11 +78,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Returns a specific user."),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred.")
     })
-    public ResponseEntity<DataUserImage> get() {
+    public ResponseEntity<DataUserStorage> get() {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        BufferedImage picture = userService.getImg(user.getPicture());
+        String picture = userService.getImageBase64(user.getPicture());
         return ResponseEntity.ok(
-                new DataUserImage(
+                new DataUserStorage(
                         user.getId(),
                         user.getUsername(),
                         user.getEmail(),
