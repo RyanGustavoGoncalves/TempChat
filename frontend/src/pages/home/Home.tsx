@@ -72,8 +72,8 @@ const HomePage = () => {
                     </nav>
                 </aside>
 
-                <main className="flex flex-col flex-1 items-start gap-4 md:p-4 sm:px-6 sm:py-0 md:gap-8">
-                    <Card className='w-full h-full flex flex-col gap-2'>
+                <main className="flex flex-col flex-1 items-start gap-4 sm:py-0 md:gap-8">
+                    <Card className='w-full h-full flex flex-col gap-2 rounded-none'>
                         <div>
                             <CardHeader>
                                 <div className='flex justify-between'>
@@ -91,14 +91,14 @@ const HomePage = () => {
                                             />
                                         </div>
 
-                                        <EllipsisVertical width={16} onClick={() => toast.success('TESTE')}/>
+                                        <EllipsisVertical width={16} onClick={() => toast.success('TESTE')} />
                                     </div>
                                 </div>
                             </CardHeader>
                             <Separator orientation='horizontal' />
                         </div>
 
-                        <div className='flex flex-col justify-between h-full'>
+                        <div className='flex flex-col justify-between flex-1'>
                             <CardContent className='grid gap-2 max-h-[45rem] overflow-auto menu-overflow'>
                                 {items.map((item, index) => (
                                     <React.Fragment key={item.id}>
