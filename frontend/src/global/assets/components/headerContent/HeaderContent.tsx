@@ -2,10 +2,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, PanelLeft } from "lucide-react";
-import UserProfile from "../userProfile/UserProfile";
 import { ModeToggle } from "@/components/ModeToggle";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { logout } from "../../utils/logout/logout";
+import DropdownMenuUser from "../DropdownMenuUser/DropdownMenuUser";
 
 const HeaderContent = () => {
     /**
@@ -30,25 +28,7 @@ const HeaderContent = () => {
                         </Link>
                         <div className="flex items-end justify-between w-full">
                             <div className="flex items-center gap-4 text-muted-foreground hover:text-foreground">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="overflow-hidden rounded-full"
-                                        >
-                                            <UserProfile />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem>Settings</DropdownMenuItem>
-                                        <DropdownMenuItem>Support</DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => { logout() }}>Logout</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <DropdownMenuUser />
                                 <span>{JSON.parse(localStorage.getItem('user')).username}</span>
                             </div>
                             <ModeToggle />

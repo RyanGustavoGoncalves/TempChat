@@ -1,10 +1,7 @@
 import { ModeToggle } from "@/components/ModeToggle";
 import { MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import UserProfile from "../userProfile/UserProfile";
-import { logout } from "../../utils/logout/logout";
+import DropdownMenuUser from "../DropdownMenuUser/DropdownMenuUser";
 
 const Navbar = () => {
     return (
@@ -18,25 +15,7 @@ const Navbar = () => {
                     <span className="sr-only">Acme Inc</span>
                 </Link>
                 <div className="grid gap-5">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="overflow-hidden rounded-full"
-                            >
-                                <UserProfile />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => { logout() }}>Logout</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <DropdownMenuUser />
                     <ModeToggle />
                 </div>
             </nav>
