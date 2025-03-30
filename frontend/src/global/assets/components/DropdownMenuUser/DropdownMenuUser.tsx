@@ -1,7 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import UserProfile from "../userProfile/UserProfile";
-import { logout } from "../../utils/logout/logout";
+import { logout } from "../../utils/scripts/logout/logout";
 
 const DropdownMenuUser = () => {
 

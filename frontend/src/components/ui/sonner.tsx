@@ -9,6 +9,7 @@ const Toaster = ({
   return (
     (<Sonner
       theme={theme}
+      // className="toaster group"
       toastOptions={{
         classNames: {
           toast:

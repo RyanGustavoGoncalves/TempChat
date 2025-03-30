@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserData } from '../../utils/getUserData/getUserData';
+import { getUserData } from '../../utils/scripts/getUserData/getUserData';
 
 interface User {
     username: string;

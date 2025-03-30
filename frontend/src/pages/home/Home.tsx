@@ -9,38 +9,12 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { Items } from '@/global/assets/utils/exData/Items';
+import Messages from '@/global/assets/components/messages/Messages';
 
 const HomePage = () => {
 
-    const items = [
-        { id: 1, name: 'Rodrigo Pereira Gonçalves', message: 'Hello World!' },
-        { id: 2, name: 'Carlos Eduardo Gonçalves', message: 'Oi Galera!' },
-        { id: 3, name: 'João Pedro Gonçalves', message: 'Hello World!' },
-        { id: 4, name: 'Maria Eduarda Gonçalves', message: 'Hello World!' },
-        { id: 5, name: 'Ana Clara Gonçalves', message: 'Hello World!' },
-        { id: 6, name: 'José Carlos Gonçalves', message: 'Hello World!' },
-        { id: 7, name: 'Rafaela Gonçalves', message: 'Hello World!' },
-        { id: 8, name: 'Gabriela Gonçalves', message: 'Hello World!' },
-        { id: 9, name: 'Lucas Gonçalves', message: 'Hello World!' },
-        { id: 10, name: 'Pedro Gonçalves', message: 'Implicações de Segurança: Conceder acesso de exclusão a tabelas do sistema pode representar riscos de segurança. Certifique-se de que isso é absolutamente necessário e avalie os impactos potenciais.' },
-        { id: 11, name: 'Paulo Gonçalves', message: 'To testando em World!' },
-        { id: 12, name: 'Paula Gonçalves', message: 'Políticas de acesso entre escopos impedem que sua aplicação exclua registros na tabela!' },
-        { id: 13, name: 'Rafael Gonçalves', message: 'Hello World!' },
-        { id: 14, name: 'Rafaela Gonçalves', message: 'Hello World!' },
-        { id: 15, name: 'Gabriela Gonçalves', message: 'Hello World!' },
-        { id: 16, name: 'Lucas Gonçalves', message: 'Hello World!' },
-        { id: 17, name: 'Pedro Gonçalves', message: 'Hello World!' },
-        { id: 18, name: 'Paulo Gonçalves', message: 'Hello World!' },
-        { id: 19, name: 'Paula Gonçalves', message: 'Hello World!' },
-        { id: 20, name: 'Rafael Gonçalves', message: 'Hello World!' },
-        { id: 21, name: 'Rafaela Gonçalves', message: 'Hello World!' },
-        { id: 22, name: 'Gabriela Gonçalves', message: 'Hello World!' },
-        { id: 23, name: 'Lucas Gonçalves', message: 'Hello World!' },
-        { id: 24, name: 'Pedro Gonçalves', message: 'Hello World!' },
-        { id: 25, name: 'Paulo Gonçalves', message: 'Hello World!' },
-        { id: 26, name: 'Paula Gonçalves', message: 'Hello World!' },
-
-    ];
+    const items = Items;
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -100,17 +74,7 @@ const HomePage = () => {
 
                         <div className='flex flex-col justify-between flex-1'>
                             <CardContent className='grid gap-2 max-h-[45rem] overflow-auto menu-overflow'>
-                                {items.map((item, index) => (
-                                    <React.Fragment key={item.id}>
-                                        <div className='grid gap-2 w-1/2 bg-secondary rounded-sm p-2 px-2'>
-                                            <div className='flex gap-2 items-center cursor-pointer'>
-                                                <CircleUser />
-                                                <h3>{item.name}</h3>
-                                            </div>
-                                            <span className='text-justify px-4'>{item.message}</span>
-                                        </div>
-                                    </React.Fragment>
-                                ))}
+                                <Messages />
                             </CardContent>
                             <CardFooter className=''>
                                 <Input type='text' placeholder='Type a message...' className='w-full rounded-r bg-background' />

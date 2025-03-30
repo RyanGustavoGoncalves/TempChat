@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Github } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { verifyType } from "@/global/assets/utils/verifyType/verifyType";
+import { verifyType } from "@/global/assets/utils/scripts/verifyType/verifyType";
 import ButtonShowPassword from "../assets/components/ButtonShowPassword";
 import { loginUser } from "./assets/utils/loginUser";
 
